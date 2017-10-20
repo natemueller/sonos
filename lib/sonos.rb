@@ -15,10 +15,18 @@ module Sonos
   #   Device::Speaker.new(ip)
   # end
 
-  # # Get the Sonos system
-  # def self.system
-  #   @system ||= Sonos::System.new
-  # end
+  # Get the Sonos system
+  def self.system
+    @system ||= Sonos::System.new
+  end
+
+  def self.first_speaker
+    system.groups.first.speakers.first
+  end
+
+  def self.playlists
+    first_speaker.container_directory("SQ:", 0, 100)
+  end
 
   unless defined? @@logging_enabled
     @@logging_enabled = false
