@@ -125,6 +125,11 @@ module Sonos::Endpoint::AVTransport
     end
   end
 
+  # Switch speaker to play from the queue
+  def switch_to_queue
+    set_av_transport_uri("x-rincon-queue:#{uid.sub('uuid:', '')}#0")
+  end
+
   # Adds a Spotify track to the queue along with extra data for better metadata retrieval
   # @param[Hash] opts Various options (id, user, region and type)
   # @param[Integer] position Optional queue insertion position. Leaving this blank inserts at the end.
