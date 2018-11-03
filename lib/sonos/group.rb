@@ -2,15 +2,28 @@ module Sonos
   # Represents a Sonos group. A group can contain one or more speakers. All speakers in a group
   # play the same music in sync.
   class Group
-    # The master speaker in the group
-    attr_accessor :master_speaker
+    attr_reader :master_speaker
 
-    # All other speakers in the group
-    attr_reader :slave_speakers
+    def add_speaker(speaker, master: false)
+      return if speakers.include?(speaker)
+      speaker.group = self
+      if master
+        @master_speaker = speaker
+      else
+        @slave_speakers << speaker
+      end
+    end
 
-    def initialize(master_speaker, slave_speakers)
-      @master_speaker = master_speaker
-      @slave_speakers = (slave_speakers or [])
+    def add_master(speaker)
+      add_speaker(speaker, master: true)
+    end
+
+    def add_slaves(speakers)
+      speakers.map { |speaker| add_speaker(speaker, master: false) }
+    end
+
+    def slave_speakers
+      @slave_speakers ||= []
     end
 
     # All of the speakers in the group

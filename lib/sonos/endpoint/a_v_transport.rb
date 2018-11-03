@@ -227,7 +227,7 @@ module Sonos::Endpoint::AVTransport
 
   # Add another speaker to this group.
   # Trying to call this on a stereo pair slave will fail.
-  def group(slave)
+  def adopt(slave)
     slave.join(self)
   end
 

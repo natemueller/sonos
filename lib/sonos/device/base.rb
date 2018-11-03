@@ -4,22 +4,23 @@ require 'nokogiri'
 module Sonos::Device
   class Base
     attr_reader :ip, :name, :uid, :serial_number, :software_version, :hardware_version,
-      :zone_type, :model_number, :mac_address, :group, :icon, :services
+      :zone_type, :model_number, :mac_address, :icon, :services
+    attr_accessor :group
 
-    attr_accessor :group_master
-
-    def self.detect(ip)
+    def self.from_ip(ip)
       data = retrieve_information(ip)
       model_number = data[:model_number]
 
-      if data[:devices].include?('urn:schemas-upnp-org:device:MediaRenderer:1')
-        Speaker.new(ip, data)
+      type = if data[:devices].include?('urn:schemas-upnp-org:device:MediaRenderer:1')
+        Speaker
       else
-        Accessory.new(ip, data)
+        Accessory
       end
+
+      type.new(ip, data: data)
     end
 
-    def initialize(ip, data = nil)
+    def initialize(ip, data: nil)
       @ip = ip
 
       if data.nil?
@@ -27,6 +28,10 @@ module Sonos::Device
       else
         self.data = data
       end
+    end
+
+    def group_master
+      group.master_speaker
     end
 
     def data=(data)
