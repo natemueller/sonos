@@ -70,7 +70,7 @@ module Sonos::Device
     end
 
     def get_playmode
-      doc = Nokogiri::XML(open("http://#{self.group_master.ip}:#{Sonos::PORT}/status/playmode"))
+      doc = Nokogiri::XML(URI.open("http://#{self.group_master.ip}:#{Sonos::PORT}/status/playmode"))
       playmode = {}
       playmode[:shuffle] = doc.xpath('//Shuffle').inner_text == "On"
       playmode[:repeat] = doc.xpath('//Repeat').inner_text == "On"
